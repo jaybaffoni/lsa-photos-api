@@ -60,17 +60,44 @@ router.put("/password", function (req, res, next) {
 
 //Change Email
 router.put("/email", function (req, res, next) {
-  res.send("change email");
+  var user_id = req.body.user_id;
+  var email = req.body.email;
+  pool.query(
+    "UPDATE users SET email=? WHERE user_id=?",
+    [email, user_id],
+    function (err, result) {
+      if (err) res.send(err);
+      res.send(result);
+    }
+  );
 });
 
 //Change Name
 router.put("/name", function (req, res, next) {
-  res.send("change name");
+  var user_id = req.body.user_id;
+  var display_name = req.body.display_name;
+  pool.query(
+    "UPDATE users SET display_name=? WHERE user_id=?",
+    [display_name, user_id],
+    function (err, result) {
+      if (err) res.send(err);
+      res.send(result);
+    }
+  );
 });
 
 //Toggle Hidden
 router.put("/hidden", function (req, res, next) {
-  res.send("toggle hidden content");
+  var user_id = req.body.user_id;
+  var show_hidden = req.body.show_hidden;
+  pool.query(
+    "UPDATE users SET show_hidden=? WHERE user_id=?",
+    [show_hidden, user_id],
+    function (err, result) {
+      if (err) res.send(err);
+      res.send(result);
+    }
+  );
 });
 
 //Get User Prefs
