@@ -102,7 +102,15 @@ router.put("/hidden", function (req, res, next) {
 
 //Get User Prefs
 router.get("/prefs", function (req, res, next) {
-  res.send("get user prefs");
+  var user_id = req.body.user_id;
+  pool.query(
+    "SELECT show_hidden FROM users WHERE user_id=?",
+    [user_id],
+    function (err, result) {
+      if (err) res.send(err);
+      res.send(result);
+    }
+  );
 });
 
 module.exports = router;
