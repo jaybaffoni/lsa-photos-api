@@ -55,4 +55,26 @@ router.delete("/:photo_id", function (req, res, next) {
   });
 });
 
+//toggle hidden
+//UPDATE photos SET hidden=true WHERE photo_id=1;
+router.put("/hidden", function (req, res, next) {
+  var photo_id = req.body.photo_id;
+  var hidden = req.body.hidden;
+  pool.query("UPDATE photos SET hidden=? WHERE photo_id=?", 
+  [hidden, photo_id],
+  function (
+    err,
+    result
+  ) {
+    if (err) {
+      console.log(err);
+      return res.status(400).send({
+        message: "Unknown Error",
+      });
+    }
+    res.send(result);
+  });
+});
+
+
 module.exports = router;
