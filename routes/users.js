@@ -15,14 +15,16 @@ router.get("/", function (req, res, next) {
     if (result.length > 0) {
       var db_password = result[0].password;
       if (input_password === db_password) {
-        console.log("password ok");
         res.send(result);
       } else {
-        console.log("password wrong");
-        res.send('[{"error":"bad password"}]');
+        return res.status(400).send({
+          message: "Incorrect Password",
+        });
       }
     } else {
-      res.send('[{"error":"could not find user"}]');
+      return res.status(400).send({
+        message: "User Not Found",
+      });
     }
   });
 });
@@ -38,7 +40,18 @@ router.post("/", function (req, res, next) {
     "INSERT INTO users (email, password, display_name, show_hidden) VALUES (?, ?, ?, ?)",
     [email, password, displayName, showHidden],
     function (err, result) {
-      if (err) res.send(err);
+      if (err) {
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(400).send({
+            message: "User Already Exists",
+          });
+        } else {
+          console.log(err);
+          return res.status(400).send({
+            message: "Unknown Error",
+          });
+        }
+      }
       res.send(result);
     }
   );
