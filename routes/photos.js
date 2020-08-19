@@ -13,6 +13,18 @@ router.get("/", function (req, res, next) {
   });
 });
 
+//get details
+router.get("/:photo_id", function (req, res, next) {
+  var photo_id = req.params.photo_id;
+  pool.query("SELECT * FROM photos WHERE photo_id=?", photo_id, function (
+    err,
+    result
+  ) {
+    if (err) throw err;
+    res.send(result[0]);
+  });
+});
+
 //upload photo
 router.post("/", function (req, res, next) {
   // console.log(req.body);
@@ -60,21 +72,19 @@ router.delete("/:photo_id", function (req, res, next) {
 router.put("/hidden", function (req, res, next) {
   var photo_id = req.body.photo_id;
   var hidden = req.body.hidden;
-  pool.query("UPDATE photos SET hidden=? WHERE photo_id=?", 
-  [hidden, photo_id],
-  function (
-    err,
-    result
-  ) {
-    if (err) {
-      console.log(err);
-      return res.status(400).send({
-        message: "Unknown Error",
-      });
+  pool.query(
+    "UPDATE photos SET hidden=? WHERE photo_id=?",
+    [hidden, photo_id],
+    function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.status(400).send({
+          message: "Unknown Error",
+        });
+      }
+      res.send(result);
     }
-    res.send(result);
-  });
+  );
 });
-
 
 module.exports = router;
